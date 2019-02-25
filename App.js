@@ -4,12 +4,34 @@ import {
   Text,
   StyleSheet,
   Picker,
+  AppState,
 } from 'react-native';
 
 export default class App extends Component {
 
-  state = {
-    seconds: 5,
+  constructor(props) {
+    super(props)
+
+    this.handleAppStateChange = this.handleAppStateChange.bind(this)
+
+    this.state = {
+      seconds: 5,
+    }
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange)
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange(appState) {
+    if (appState === 'background') {
+      // TODO: schedule background notification
+      console.log('app is in the background', this.state.seconds)
+    }
   }
 
   render() {
@@ -26,7 +48,6 @@ export default class App extends Component {
           <Picker.Item label="5" value={5} />
           <Picker.Item label="10" value={10} />
           <Picker.Item label="15" value={15} />
-
         </Picker>
       </View>
     );
